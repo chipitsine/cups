@@ -2478,7 +2478,7 @@ cupsdWriteClient(cupsd_client_t *con)	/* I - Client connection */
 	    }
 
 	    field = httpFieldValue(con->header);
-            cupsdLogClient(con, CUPSD_LOG_DEBUG2, "Script header: field=%d, value=\"%s\"", field, value);
+            cupsdLogClient(con, CUPSD_LOG_DEBUG2, "Script header: field=%d, value=\"%s\"", field, value ? value : "(null)");
 
 	    if (field != HTTP_FIELD_UNKNOWN && value)
 	    {
