@@ -397,6 +397,7 @@ get_device(const char   *name,		// I - Name of service/device
            const char   *domain)	// I - Service domain
 {
   cups_device_t	key,			// Search key
+		*match,			// Matching device
 		*device;		// Device
   char		fullname[1024];		// Full name for query
 
@@ -407,31 +408,31 @@ get_device(const char   *name,		// I - Name of service/device
   key.name = (char *)name;
   key.type = device_type(regtype);
 
-  for (device = cupsArrayFind(Devices, &key); device; device = cupsArrayGetNext(Devices))
+  for (match = cupsArrayFind(Devices, &key); match; match = cupsArrayGetNext(Devices))
   {
-    if (_cups_strcasecmp(device->name, key.name))
+    if (_cups_strcasecmp(match->name, key.name))
     {
       // Out of matches...
       break;
     }
-    else if (device->type == key.type)
+    else if (match->type == key.type)
     {
       // Match!
-      if (!_cups_strcasecmp(device->domain, "local.") && _cups_strcasecmp(device->domain, domain))
+      if (!_cups_strcasecmp(match->domain, "local.") && _cups_strcasecmp(match->domain, domain))
       {
         // Update the .local listing to use the "global" domain name instead.
 	// The backend will try local lookups first, then the global domain name.
-        free(device->domain);
-	device->domain = strdup(domain);
+        free(match->domain);
+	match->domain = strdup(domain);
 
         cupsDNSSDAssembleFullName(fullname, sizeof(fullname), name, regtype, domain);
-	free(device->fullname);
-	device->fullname = strdup(fullname);
+	free(match->fullname);
+	match->fullname = strdup(fullname);
       }
 
       cupsMutexUnlock(&DevicesMutex);
 
-      return (device);
+      return (match);
     }
   }
 
