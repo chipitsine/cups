@@ -7309,8 +7309,10 @@ show_media(ippeve_client_t  *client)	// I - Client connection
       }
       html_printf(client, "</select>");
     }
-    else
+    else if (ready_size)
       html_printf(client, "<td>%s", ready_size);
+    else
+      html_printf(client, "<td>None");
 
     // Media type...
     if (printer->web_forms)
