@@ -28,10 +28,12 @@ jobs:
     - name: Configure CUPS
       env:
         CC: /usr/bin/gcc
-      run: CFLAGS='-g -fsanitize=address -O2' ./configure --enable-debug --enable-maintainer
+      run: ./configure --enable-debug --enable-maintainer --enable-sanitizer --with-optim="-O2"
     - name: Build CUPS
       run: make
     - name: Test CUPS
+      env:
+        ASAN_OPTIONS: leak_check_at_exit=false
       run: make test
     - name: Upload Test Results
       uses: actions/upload-artifact@v7
@@ -60,10 +62,12 @@ jobs:
       env:
         CC: /usr/bin/gcc
         CXX: /usr/bin/g++
-      run: CFLAGS='-g -fsanitize=address -O2' ./configure --enable-debug --enable-maintainer --with-tls=gnutls
+      run: ./configure --enable-debug --enable-maintainer --enable-sanitizer --with-optim="-O2" --with-tls=gnutls
     - name: Build CUPS
       run: make
     - name: Test CUPS
+      env:
+        ASAN_OPTIONS: leak_check_at_exit=false
       run: make test
     - name: Test GnuTLS SSLOptions
       run: python3 test/testssloptions.py
@@ -89,7 +93,7 @@ jobs:
     - name: Configure CUPS
       env:
         LDFLAGS: -L/opt/homebrew/Cellar/openssl@3/3.3.0/lib
-      run: CFLAGS='-g -fsanitize=address -O2' ./configure --enable-debug --enable-maintainer --disable-shared
+      run: ./configure --enable-debug --enable-maintainer --enable-sanitizer --with-optim="-O2" --disable-shared
     - name: Build CUPS
       run: make
     - name: Test CUPS

@@ -50,8 +50,18 @@ main(int argc, char *argv[])
   return (0);
 }
 """)
+    cflags = shlex.split(os.environ.get("CFLAGS", ""))
+    makedefs = root / "Makedefs"
+    if makedefs.is_file():
+        for line in makedefs.read_text().splitlines():
+            if line.startswith("OPTIM") and "=" in line:
+                for opt in shlex.split(line.split("=", 1)[1]):
+                    if opt.startswith("-fsanitize") and opt not in cflags:
+                        cflags.append(opt)
+
     subprocess.run(
         shlex.split(os.environ.get("CC", "cc"))
+        + cflags
         + [
             "-I" + str(root),
             str(p / "client.c"),
