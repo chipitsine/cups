@@ -28,7 +28,7 @@ jobs:
     - name: Configure CUPS
       env:
         CC: /usr/bin/gcc
-      run: ./configure --enable-debug --enable-maintainer
+      run: CFLAGS='-g -fsanitize=address -O2' ./configure --enable-debug --enable-maintainer
     - name: Build CUPS
       run: make
     - name: Test CUPS
@@ -60,7 +60,7 @@ jobs:
       env:
         CC: /usr/bin/gcc
         CXX: /usr/bin/g++
-      run: ./configure --enable-debug --enable-maintainer --with-tls=gnutls
+      run: CFLAGS='-g -fsanitize=address -O2' ./configure --enable-debug --enable-maintainer --with-tls=gnutls
     - name: Build CUPS
       run: make
     - name: Test CUPS
@@ -89,7 +89,7 @@ jobs:
     - name: Configure CUPS
       env:
         LDFLAGS: -L/opt/homebrew/Cellar/openssl@3/3.3.0/lib
-      run: ./configure --enable-debug --enable-maintainer --disable-shared
+      run: CFLAGS='-g -fsanitize=address -O2' ./configure --enable-debug --enable-maintainer --disable-shared
     - name: Build CUPS
       run: make
     - name: Test CUPS
